@@ -1,21 +1,23 @@
 import { z } from "zod";
 
 // Schema for casino location response
-const CasinoLocationSchema = z.object({
-  casinoID: z.string(),
-  managementID: z.string(),
-  description: z.string(),
-  shortName: z.string(),
-  city: z.string(),
-  state: z.string(),
-  lat: z.number(),
-  lng: z.number(),
-  distance: z.number(),
-  gameCount: z.number().nullable(),
-  liveGamePoker: z.boolean(),
-  enableGameList: z.boolean(),
-  enableWaitListInfo: z.boolean(),
-});
+const CasinoLocationSchema = z
+  .object({
+    casinoID: z.string(),
+    managementID: z.string(),
+    description: z.string(),
+    shortName: z.string(),
+    city: z.string(),
+    state: z.string(),
+    lat: z.number(),
+    lng: z.number(),
+    distance: z.number(),
+    gameCount: z.number().nullable(),
+    liveGamePoker: z.boolean(),
+    enableGameList: z.boolean(),
+    enableWaitListInfo: z.boolean(),
+  })
+  .passthrough();
 
 export type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
 
@@ -131,8 +133,6 @@ export class BravoPokerLive {
       },
       schema: z.array(CasinoDetailSchema),
     });
-
-    console.log(data);
 
     return data.length > 0 ? data[0] : null;
   }

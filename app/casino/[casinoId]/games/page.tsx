@@ -26,7 +26,7 @@ export default async function CasinoGamesPage({
         <div className="mb-6">
           <BackButton href="/" label="Back to casinos" />
           <h1 className="text-2xl font-bold">
-            Active Games at {casinoDetail.casinodescription}
+            {casinoDetail.casinodescription}
           </h1>
         </div>
         <GameList games={games} casinoId={casinoId} />

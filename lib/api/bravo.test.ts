@@ -26,7 +26,7 @@ describe("BravoPokerLive", () => {
     });
   });
 
-  describe.only("getCasinoDetail", () => {
+  describe("getCasinoDetail", () => {
     it("should fetch and parse game list successfully", async () => {
       const casino = await bravo.getCasinoDetail(mgmCode);
 
@@ -39,8 +39,6 @@ describe("BravoPokerLive", () => {
       const waitlist = await bravo.getWaitlist(mgmCode);
 
       expect(waitlist).toBeInstanceOf(Array);
-      console.log(waitlist[1].players[2]);
-      console.log(waitlist[1].players);
     });
 
     it("should throw error with invalid casino ID", async () => {
