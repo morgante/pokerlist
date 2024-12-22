@@ -1,3 +1,4 @@
+import { a } from "vitest/dist/chunks/suite.B2jumIFP.js";
 import { z } from "zod";
 
 // Schema for casino location response
@@ -136,6 +137,11 @@ export class BravoPokerLive {
         });
       }
       gameMap.get(entry.gamecode)?.players.push(entry);
+    }
+
+    // Sort players by position in the waitlist
+    for (const game of gameMap.values()) {
+      game.players.sort((a, b) => a.displayorder - b.displayorder);
     }
 
     return Array.from(gameMap.values());
