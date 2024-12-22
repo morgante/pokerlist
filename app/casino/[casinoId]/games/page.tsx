@@ -10,7 +10,7 @@ export default async function CasinoGamesPage({
 }) {
   try {
     const games = await bravoClient.getWaitlist(params.casinoId);
-    
+
     return (
       <main className="container max-w-md mx-auto p-4">
         <div className="mb-6">
@@ -21,6 +21,7 @@ export default async function CasinoGamesPage({
       </main>
     );
   } catch (error) {
+    console.error("Error fetching games", error);
     notFound();
   }
 }

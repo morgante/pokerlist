@@ -1,24 +1,7 @@
 import { z } from "zod";
 
-export class BravoAPIError extends Error {
-  constructor(
-    message: string,
-    public readonly endpoint: string,
-    public readonly statusCode?: number,
-    public readonly responseText?: string
-  ) {
-    super(message);
-    this.name = "BravoAPIError";
-    console.error(`[Bravo API Error] ${message}`, {
-      endpoint,
-      statusCode,
-      responseText,
-    });
-  }
-}
-
-// Schema definitions...
-export const CasinoLocationSchema = z.object({
+// Schema for casino location response
+const CasinoLocationSchema = z.object({
   casinoID: z.string(),
   managementID: z.string(),
   description: z.string(),
@@ -34,29 +17,32 @@ export const CasinoLocationSchema = z.object({
   enableWaitListInfo: z.boolean(),
 });
 
-export type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
+type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
 
-interface BravoPokerLiveOptions {
-  baseUrl?: string;
-  debug?: boolean;
-}
+// Schema for waitlist entry
+const WaitlistEntrySchema = z.object({
+  gamemin: z.number(),
+  playercount: z.number(),
+  playername: z.string(),
+  gamedesc: z.string(),
+  gamename: z.string(),
+  gamecode: z.string(),
+  entrytime: z.string(),
+  lastupdatedtm: z.string(),
+  interestlist: z.number(),
+  customersakey: z.string(),
+  gamemax: z.number(),
+  called: z.number(),
+  displayorder: z.string(),
+});
+
+type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
 
 export class BravoPokerLive {
-  private readonly baseUrl: string;
-  private readonly debug: boolean;
-
-  constructor(options: BravoPokerLiveOptions = {}) {
-    this.baseUrl =
-      options.baseUrl || "https://bravopokerlive.appspot.com/service";
-    this.debug = options.debug || false;
-  }
-
-  private log(message: string, data?: any) {
-    if (this.debug) {
-      console.log(`[Bravo API] ${message}`, data || "");
-    }
-  }
-
+  private readonly baseUrl = "https://bravopokerlive.appspot.com/service";
+  /**
+   * Private helper method to handle API requests
+   */
   private async fetchData<T>({
     endpoint,
     data,
@@ -69,89 +55,43 @@ export class BravoPokerLive {
     const url = `${this.baseUrl}/${endpoint}`;
     const formData = new URLSearchParams(data);
 
-    this.log(`Request to ${endpoint}`, data);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+        Accept: "*/*",
+      },
+      body: formData,
+    });
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-          Accept: "*/*",
-        },
-        body: formData,
-      });
-
-      const responseText = await response.text();
-      this.log(`Response from ${endpoint}`, responseText);
-
-      let responseData;
-      try {
-        responseData = JSON.parse(responseText);
-      } catch (e) {
-        throw new BravoAPIError(
-          "Invalid JSON response",
-          endpoint,
-          response.status,
-          responseText
-        );
-      }
-
-      if (!response.ok) {
-        throw new BravoAPIError(
-          `HTTP error ${response.status}: ${response.statusText}`,
-          endpoint,
-          response.status,
-          responseText
-        );
-      }
-
-      if (
-        Array.isArray(responseData) &&
-        responseData.length === 1 &&
-        responseData[0].MSG
-      ) {
-        console.error("THIS WAS AN ERROR");
-        throw new BravoAPIError(
-          responseData[0].MSG,
-          endpoint,
-          response.status,
-          responseText
-        );
-      }
-
-      try {
-        return schema.parse(responseData);
-      } catch (e) {
-        if (e instanceof z.ZodError) {
-          throw new BravoAPIError(
-            `Invalid response format: ${e.message}`,
-            endpoint,
-            response.status,
-            responseText
-          );
-        }
-        throw e;
-      }
-    } catch (error) {
-      if (error instanceof BravoAPIError) {
-        throw error;
-      }
-      throw new BravoAPIError(
-        `Network error: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        endpoint
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch data from ${endpoint}: ${response.statusText}`
       );
     }
+
+    const responseData = await response.json();
+
+    // Check for error response format
+    if (
+      Array.isArray(responseData) &&
+      responseData.length === 1 &&
+      responseData[0].MSG
+    ) {
+      throw new Error(responseData[0].MSG);
+    }
+
+    return schema.parse(responseData);
   }
 
+  /**
+   * Fetches nearby casinos based on latitude and longitude
+   */
   async findNearbyCasinos(
     lat: number,
     lon: number,
-    miles: number = 50
+    miles: number = 5
   ): Promise<CasinoLocation[]> {
-    this.log("Finding nearby casinos", { lat, lon, miles });
-
     return this.fetchData({
       endpoint: "getcasinolistbylocation",
       data: {
@@ -161,5 +101,43 @@ export class BravoPokerLive {
       },
       schema: z.array(CasinoLocationSchema),
     });
+  }
+
+  /**
+   * Fetches the waitlist for a specific casino
+   */
+  async getWaitlist(casinoId: string, managementId: string = "x") {
+    const data = this.fetchData({
+      endpoint: "getwaitlistbycasinoid",
+      data: {
+        casino: `${casinoId}|${managementId}`,
+      },
+      schema: z.array(WaitlistEntrySchema),
+    });
+
+    const rawData = await data;
+
+    // Group entries by game code
+    const gameMap = new Map<
+      string,
+      {
+        gamecode: string;
+        gamename: string;
+        players: Array<z.infer<typeof WaitlistEntrySchema>>;
+      }
+    >();
+
+    for (const entry of rawData) {
+      if (!gameMap.has(entry.gamecode)) {
+        gameMap.set(entry.gamecode, {
+          gamecode: entry.gamecode,
+          gamename: entry.gamename,
+          players: [],
+        });
+      }
+      gameMap.get(entry.gamecode)?.players.push(entry);
+    }
+
+    return Array.from(gameMap.values());
   }
 }
