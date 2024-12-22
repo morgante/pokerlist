@@ -1,4 +1,3 @@
-import { a } from "vitest/dist/chunks/suite.B2jumIFP.js";
 import { z } from "zod";
 
 // Schema for casino location response
@@ -18,7 +17,7 @@ const CasinoLocationSchema = z.object({
   enableWaitListInfo: z.boolean(),
 });
 
-type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
+export type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
 
 // Schema for waitlist entry
 const WaitlistEntrySchema = z.object({
@@ -37,7 +36,7 @@ const WaitlistEntrySchema = z.object({
   displayorder: z.string(),
 });
 
-type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
+export type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
 
 export class BravoPokerLive {
   private readonly baseUrl = "https://bravopokerlive.appspot.com/service";

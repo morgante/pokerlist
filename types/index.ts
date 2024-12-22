@@ -1,3 +1,5 @@
+import type { WaitlistEntry } from "@/lib/api/bravo-api";
+
 export interface Casino {
   id: string;
   name: string;
@@ -9,13 +11,9 @@ export interface Casino {
 export interface Game {
   id: string;
   name: string;
-  type: 'poker' | 'blackjack' | 'roulette';
+  type: "poker" | "blackjack" | "roulette";
   stakes: string;
   waitingList: Player[];
 }
 
-export interface Player {
-  id: string;
-  name: string;
-  joinedAt: string;
-}
+export type Player = Pick<WaitlistEntry, "playername" | "entrytime">;

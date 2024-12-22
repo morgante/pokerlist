@@ -1,12 +1,10 @@
 import { Users } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { formatWaitTime } from '@/lib/utils/date';
-import type { WaitlistEntry } from '@/lib/api/bravo-api';
+import type { Player } from '@/types';
 
-export function WaitingList({ players }: { players: WaitlistEntry[] }) {
-  const sortedPlayers = [...players].sort((a, b) => 
-    new Date(a.entrytime).getTime() - new Date(b.entrytime).getTime()
-  );
+export function WaitingList({ players }: { players: Player[] }) {
+  const sortedPlayers = players;
 
   return (
     <Card>
