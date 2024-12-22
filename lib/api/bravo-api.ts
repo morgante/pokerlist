@@ -8,11 +8,11 @@ export class BravoAPIError extends Error {
     public readonly responseText?: string
   ) {
     super(message);
-    this.name = 'BravoAPIError';
+    this.name = "BravoAPIError";
     console.error(`[Bravo API Error] ${message}`, {
       endpoint,
       statusCode,
-      responseText
+      responseText,
     });
   }
 }
@@ -46,13 +46,14 @@ export class BravoPokerLive {
   private readonly debug: boolean;
 
   constructor(options: BravoPokerLiveOptions = {}) {
-    this.baseUrl = options.baseUrl || "https://bravopokerlive.appspot.com/service";
+    this.baseUrl =
+      options.baseUrl || "https://bravopokerlive.appspot.com/service";
     this.debug = options.debug || false;
   }
 
   private log(message: string, data?: any) {
     if (this.debug) {
-      console.log(`[Bravo API] ${message}`, data || '');
+      console.log(`[Bravo API] ${message}`, data || "");
     }
   }
 
@@ -88,7 +89,7 @@ export class BravoPokerLive {
         responseData = JSON.parse(responseText);
       } catch (e) {
         throw new BravoAPIError(
-          'Invalid JSON response',
+          "Invalid JSON response",
           endpoint,
           response.status,
           responseText
@@ -109,6 +110,7 @@ export class BravoPokerLive {
         responseData.length === 1 &&
         responseData[0].MSG
       ) {
+        console.error("THIS WAS AN ERROR");
         throw new BravoAPIError(
           responseData[0].MSG,
           endpoint,
@@ -135,7 +137,9 @@ export class BravoPokerLive {
         throw error;
       }
       throw new BravoAPIError(
-        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Network error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
         endpoint
       );
     }
@@ -144,10 +148,10 @@ export class BravoPokerLive {
   async findNearbyCasinos(
     lat: number,
     lon: number,
-    miles: number = 5,
+    miles: number = 5
   ): Promise<CasinoLocation[]> {
-    this.log('Finding nearby casinos', { lat, lon, miles });
-    
+    this.log("Finding nearby casinos", { lat, lon, miles });
+
     return this.fetchData({
       endpoint: "getcasinolistbylocation",
       data: {

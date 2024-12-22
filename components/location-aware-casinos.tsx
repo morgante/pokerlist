@@ -28,6 +28,16 @@ export function LocationAwareCasinos() {
               }
             });
           }
+          if (data.error) {
+            throw new Error(data.error, {
+              cause: {
+                status: res.status,
+                statusText: res.statusText,
+                details: data.details,
+                endpoint: data.endpoint
+              }
+            });
+          }
           return data;
         })
         .then(setCasinos)

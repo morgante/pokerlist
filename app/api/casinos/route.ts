@@ -27,12 +27,13 @@ export async function GET(request: Request) {
       parseFloat(lat),
       parseFloat(lon)
     );
-    console.log("We got here...");
     const response = NextResponse.json(casinos);
     logger.logResponse(response, startTime);
     return response;
   } catch (error) {
     logger.logError(error as Error);
+
+    console.error("WE are erroring here...");
 
     if (error instanceof BravoAPIError) {
       const response = NextResponse.json(
