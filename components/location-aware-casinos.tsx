@@ -53,5 +53,7 @@ export function LocationAwareCasinos() {
     return <ErrorDisplay error={error} />;
   }
 
+  console.log("casinos", casinos);
+
   return <CasinoList casinos={casinos} />;
 }
