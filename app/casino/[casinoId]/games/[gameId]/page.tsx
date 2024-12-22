@@ -11,7 +11,7 @@ export default async function GamePage({
   try {
     const games = await bravoClient.getWaitlist(params.casinoId);
     const game = games.find((g) => g.gamecode === params.gameId);
-    
+
     if (!game) {
       notFound();
     }
@@ -19,7 +19,7 @@ export default async function GamePage({
     return (
       <main className="container max-w-md mx-auto p-4">
         <div className="mb-6">
-          <BackButton />
+          <BackButton href={`/casino/${params.casinoId}/games`} label="Back to games" />
           <h1 className="text-2xl font-bold">{game.gamename}</h1>
         </div>
         <WaitingList players={game.players} />

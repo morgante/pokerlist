@@ -14,8 +14,8 @@ export default async function CasinoGamesPage({
     return (
       <main className="container max-w-md mx-auto p-4">
         <div className="mb-6">
-          <BackButton />
-          <h1 className="text-2xl font-bold">Active Games</h1>
+          <BackButton href="/" label="Back to casinos" />
+          <h1 className="text-2xl font-bold">Active Games at {params.casinoId}</h1>
         </div>
         <GameList games={games} casinoId={params.casinoId} />
       </main>

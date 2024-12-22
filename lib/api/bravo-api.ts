@@ -90,7 +90,7 @@ export class BravoPokerLive {
   async findNearbyCasinos(
     lat: number,
     lon: number,
-    miles: number = 5
+    miles: number = 50
   ): Promise<CasinoLocation[]> {
     return this.fetchData({
       endpoint: "getcasinolistbylocation",

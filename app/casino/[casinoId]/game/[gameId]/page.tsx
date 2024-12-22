@@ -34,7 +34,7 @@ export default async function GamePage({
   return (
     <main className="container max-w-md mx-auto p-4">
       <div className="mb-6">
-        <BackButton />
+        <BackButton href={`/casino/${params.casinoId}`} label="Back to casino" />
         <h1 className="text-2xl font-bold">{casino.name}</h1>
         <p className="text-muted-foreground">{game.name} - {game.stakes}</p>
       </div>

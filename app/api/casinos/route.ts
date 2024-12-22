@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     logger.logError(error as Error);
 
     const response = NextResponse.json(
-      { error: "Failed to fetch casinos" },
+      { error: error.message ?? "Failed to fetch casinos" },
       { status: 500 }
     );
     logger.logResponse(response, startTime);
