@@ -13,7 +13,7 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, casinoId }: GameCardProps) {
-  const targetPlayer = "Danny";
+  const targetPlayer = "Morgante";
 
   // Find position of player named "Morgante" in any game's waitlist
   const position = game.players.findIndex(player => player.playername.toLowerCase().includes(targetPlayer.toLowerCase()));
