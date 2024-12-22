@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import type { WaitlistEntry } from '@/lib/api/bravo-api';
+import { usePlayer } from '@/hooks/use-player';
 
 interface GameCardProps {
   game: {
@@ -13,10 +14,10 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, casinoId }: GameCardProps) {
-  const targetPlayer = "Morgante";
+  const { isTarget } = usePlayer();
 
   // Find position of player named "Morgante" in any game's waitlist
-  const position = game.players.findIndex(player => player.playername.toLowerCase().includes(targetPlayer.toLowerCase()));
+  const position = game.players.findIndex(player => isTarget(player));
 
   return (
     <Card>

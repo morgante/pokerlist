@@ -2,9 +2,11 @@ import { Users } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { formatWaitTime } from '@/lib/utils/date';
 import type { Player } from '@/types';
+import { usePlayer } from '@/hooks/use-player';
 
 export function WaitingList({ players }: { players: Player[] }) {
   const sortedPlayers = players;
+  const { isTarget } = usePlayer();
 
   return (
     <Card>
@@ -25,7 +27,7 @@ export function WaitingList({ players }: { players: Player[] }) {
                 className="flex items-center justify-between p-3 bg-accent rounded-lg"
               >
                 <div>
-                  <div className="font-medium">
+                  <div className={`font-medium ${isTarget(player) ? 'text-green-500' : ''}`}>
                     {index + 1}. {player.playername}
                   </div>
                   <div className="text-sm text-muted-foreground">
