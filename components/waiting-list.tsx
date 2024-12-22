@@ -21,7 +21,7 @@ export function WaitingList({ players }: { players: Player[] }) {
           <div className="space-y-4">
             {sortedPlayers.map((player, index) => (
               <div
-                key={`${player.customersakey}-${player.entrytime}`}
+                key={`${player.playername}-${player.entrytime}`}
                 className="flex items-center justify-between p-3 bg-accent rounded-lg"
               >
                 <div>

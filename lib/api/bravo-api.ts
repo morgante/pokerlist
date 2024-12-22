@@ -140,7 +140,9 @@ export class BravoPokerLive {
 
     // Sort players by position in the waitlist
     for (const game of gameMap.values()) {
-      game.players.sort((a, b) => a.displayorder - b.displayorder);
+      game.players.sort(
+        (a, b) => Number(a.displayorder) - Number(b.displayorder)
+      );
     }
 
     return Array.from(gameMap.values());
