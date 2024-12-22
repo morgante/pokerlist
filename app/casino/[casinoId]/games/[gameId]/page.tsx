@@ -6,11 +6,13 @@ import { WaitingList } from '@/components/waiting-list';
 export default async function GamePage({
   params,
 }: {
-  params: { casinoId: string; gameId: string };
+  params: Promise<{ casinoId: string; gameId: string }>;
 }) {
+  const { casinoId, gameId } = await params;
+
   try {
-    const games = await bravoClient.getWaitlist(params.casinoId);
-    const game = games.find((g) => g.gamecode === params.gameId);
+    const games = await bravoClient.getWaitlist(casinoId);
+    const game = games.find((g) => g.gamecode === gameId);
 
     if (!game) {
       notFound();
@@ -19,7 +21,7 @@ export default async function GamePage({
     return (
       <main className="container max-w-md mx-auto p-4">
         <div className="mb-6">
-          <BackButton href={`/casino/${params.casinoId}/games`} label="Back to games" />
+          <BackButton href={`/casino/${casinoId}/games`} label="Back to games" />
           <h1 className="text-2xl font-bold">{game.gamename}</h1>
         </div>
         <WaitingList players={game.players} />
