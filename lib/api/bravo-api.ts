@@ -19,6 +19,14 @@ const CasinoLocationSchema = z.object({
 
 export type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
 
+// Schema for casino details response
+const CasinoDetailSchema = z.object({
+  casinodescription: z.string(),
+  managementID: z.string(),
+});
+
+export type CasinoDetail = z.infer<typeof CasinoDetailSchema>;
+
 // Schema for waitlist entry
 const WaitlistEntrySchema = z.object({
   gamemin: z.number(),
@@ -81,7 +89,13 @@ export class BravoPokerLive {
       throw new Error(responseData[0].MSG);
     }
 
-    return schema.parse(responseData);
+    const parse = schema.safeParse(responseData);
+    if (!parse.success) {
+      console.error(parse.error, responseData);
+      throw new Error("Failed to parse response data");
+    }
+
+    return parse.data;
   }
 
   /**
@@ -92,7 +106,7 @@ export class BravoPokerLive {
     lon: number,
     miles: number = 50
   ): Promise<CasinoLocation[]> {
-    return this.fetchData({
+    const data = await this.fetchData({
       endpoint: "getcasinolistbylocation",
       data: {
         lat: lat.toString(),
@@ -101,21 +115,37 @@ export class BravoPokerLive {
       },
       schema: z.array(CasinoLocationSchema),
     });
+
+    return data;
+  }
+
+  async getCasinoDetail(casinoId: string, managementId = "x") {
+    const data = await this.fetchData({
+      endpoint: "getcasinodetailbyid",
+      data: {
+        mgmtid: managementId,
+        casinoid: casinoId,
+        // casino: `${casinoId}|${managementId}`,
+      },
+      schema: z.array(CasinoDetailSchema),
+    });
+
+    console.log(data);
+
+    return data.length > 0 ? data[0] : null;
   }
 
   /**
    * Fetches the waitlist for a specific casino
    */
-  async getWaitlist(casinoId: string, managementId: string = "x") {
-    const data = this.fetchData({
+  async getWaitlist(casinoId: string, managementId = "x") {
+    const rawData = await this.fetchData({
       endpoint: "getwaitlistbycasinoid",
       data: {
         casino: `${casinoId}|${managementId}`,
       },
       schema: z.array(WaitlistEntrySchema),
     });
-
-    const rawData = await data;
 
     // Group entries by game code
     const gameMap = new Map<

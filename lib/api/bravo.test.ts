@@ -26,6 +26,14 @@ describe("BravoPokerLive", () => {
     });
   });
 
+  describe.only("getCasinoDetail", () => {
+    it("should fetch and parse game list successfully", async () => {
+      const casino = await bravo.getCasinoDetail(mgmCode);
+
+      expect(casino?.casinodescription).toBe("MGM National Harbor");
+    });
+  });
+
   describe("getWaitlist", () => {
     it("should fetch and parse waitlist successfully", async () => {
       const waitlist = await bravo.getWaitlist(mgmCode);
