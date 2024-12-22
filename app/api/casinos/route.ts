@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const response = NextResponse.json(casinos);
     logger.logResponse(response, startTime);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     logger.logError(error as Error);
 
     const response = NextResponse.json(
