@@ -123,7 +123,7 @@ export class BravoPokerLive {
       {
         gamecode: string;
         gamename: string;
-        players: Array<z.infer<typeof WaitlistEntrySchema>>;
+        players: Array<WaitlistEntry>;
       }
     >();
 
