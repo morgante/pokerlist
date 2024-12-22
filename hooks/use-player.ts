@@ -1,7 +1,7 @@
 import type { Player } from "@/types";
 
 export function usePlayer() {
-  const name = "Danny";
+  const name = "Morgante";
   return {
     player: name,
     isTarget: (player: Player) =>

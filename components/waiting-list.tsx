@@ -24,10 +24,11 @@ export function WaitingList({ players }: { players: Player[] }) {
             {sortedPlayers.map((player, index) => (
               <div
                 key={`${player.playername}-${player.entrytime}`}
-                className="flex items-center justify-between p-3 bg-accent rounded-lg"
+                className={`flex items-center justify-between p-3 rounded-lg ${isTarget(player) ? 'bg-green-500/20' : 'bg-accent'
+                  }`}
               >
                 <div>
-                  <div className={`font-medium ${isTarget(player) ? 'text-green-500' : ''}`}>
+                  <div className="font-medium">
                     {index + 1}. {player.playername}
                   </div>
                   <div className="text-sm text-muted-foreground">

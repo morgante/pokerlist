@@ -10,7 +10,7 @@ interface GameListProps {
   casinoId: string;
 }
 
-export function GameList({ games, casinoId, targetPlayer }: GameListProps) {
+export function GameList({ games, casinoId }: GameListProps) {
   return (
     <div className="space-y-4">
       {games.map((game) => (
