@@ -20,10 +20,12 @@ const CasinoLocationSchema = z.object({
 export type CasinoLocation = z.infer<typeof CasinoLocationSchema>;
 
 // Schema for casino details response
-const CasinoDetailSchema = z.object({
-  casinodescription: z.string(),
-  managementID: z.string(),
-});
+const CasinoDetailSchema = z
+  .object({
+    casinodescription: z.string(),
+    managementID: z.string(),
+  })
+  .passthrough();
 
 export type CasinoDetail = z.infer<typeof CasinoDetailSchema>;
 
@@ -104,7 +106,7 @@ export class BravoPokerLive {
   async findNearbyCasinos(
     lat: number,
     lon: number,
-    miles: number = 50
+    miles = 50
   ): Promise<CasinoLocation[]> {
     const data = await this.fetchData({
       endpoint: "getcasinolistbylocation",

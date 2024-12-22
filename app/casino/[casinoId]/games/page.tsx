@@ -11,19 +11,29 @@ export default async function CasinoGamesPage({
   const { casinoId } = await params;
 
   try {
-    const games = await bravoClient.getWaitlist(casinoId);
+    // Fetch both casino details and games in parallel
+    const [casinoDetail, games] = await Promise.all([
+      bravoClient.getCasinoDetail(casinoId),
+      bravoClient.getWaitlist(casinoId)
+    ]);
+
+    if (!casinoDetail) {
+      notFound();
+    }
 
     return (
       <main className="container max-w-md mx-auto p-4">
         <div className="mb-6">
           <BackButton href="/" label="Back to casinos" />
-          <h1 className="text-2xl font-bold">Active Games at {casinoId}</h1>
+          <h1 className="text-2xl font-bold">
+            Active Games at {casinoDetail.casinodescription}
+          </h1>
         </div>
         <GameList games={games} casinoId={casinoId} />
       </main>
     );
   } catch (error) {
-    console.error("Error fetching games", error);
+    console.error("Error fetching casino data", error);
     notFound();
   }
 }
