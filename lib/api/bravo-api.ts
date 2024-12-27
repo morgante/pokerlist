@@ -110,17 +110,26 @@ export class BravoPokerLive {
     lon: number,
     miles = 50
   ): Promise<CasinoLocation[]> {
-    const data = await this.fetchData({
-      endpoint: "getcasinolistbylocation",
-      data: {
-        lat: lat.toString(),
-        lon: lon.toString(),
-        mile: miles.toString(),
-      },
-      schema: z.array(CasinoLocationSchema),
-    });
-
-    return data;
+    try {
+      const data = await this.fetchData({
+        endpoint: "getcasinolistbylocation",
+        data: {
+          lat: lat.toString(),
+          lon: lon.toString(),
+          mile: miles.toString(),
+        },
+        schema: z.array(CasinoLocationSchema),
+      });
+      return data;
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("No recent updates")
+      ) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async getCasinoDetail(casinoId: string, managementId = "x") {

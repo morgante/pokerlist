@@ -63,7 +63,11 @@ export function LocationAwareCasinos() {
     return <ErrorDisplay error={error} />;
   }
 
-  console.log("casinos", casinos);
+  if (casinos.length === 0) {
+    return <div className="flex justify-center items-center py-8">
+      <span className="ml-2">No casinos found nearby</span>
+    </div>;
+  }
 
   return <CasinoList casinos={casinos} />;
 }
