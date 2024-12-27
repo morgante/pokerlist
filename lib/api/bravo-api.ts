@@ -32,21 +32,23 @@ const CasinoDetailSchema = z
 export type CasinoDetail = z.infer<typeof CasinoDetailSchema>;
 
 // Schema for waitlist entry
-const WaitlistEntrySchema = z.object({
-  gamemin: z.number(),
-  playercount: z.number(),
-  playername: z.string(),
-  gamedesc: z.string(),
-  gamename: z.string(),
-  gamecode: z.string(),
-  entrytime: z.string(),
-  lastupdatedtm: z.string(),
-  interestlist: z.number(),
-  customersakey: z.string(),
-  gamemax: z.number(),
-  called: z.number(),
-  displayorder: z.string(),
-});
+const WaitlistEntrySchema = z
+  .object({
+    // gamemin: z.number(),
+    playercount: z.number(),
+    playername: z.string(),
+    gamedesc: z.string(),
+    gamename: z.string(),
+    gamecode: z.string(),
+    entrytime: z.string(),
+    // lastupdatedtm: z.string(),
+    // interestlist: z.number(),
+    // customersakey: z.string(),
+    // gamemax: z.number(),
+    // called: z.number(),
+    displayorder: z.string(),
+  })
+  .passthrough();
 
 export type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
 
